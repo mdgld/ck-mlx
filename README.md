@@ -1,11 +1,14 @@
 # ck-mlx
 
-`ck-mlx` is a local code search CLI and MCP server with two embedding backends:
+`ck-mlx` is the Python fork of `ck-search`: a local code search CLI and MCP server
+with two embedding backends.
 
 - `local` runs MLX embedding and reranking models directly on Apple Silicon.
 - `api` talks to an OpenAI-compatible oMLX server.
 
-This fork replaces the original Rust workspace with the working Python dual-backend implementation and keeps the user-facing search flow simple:
+The package is published as `ck-mlx` and installs the `ck-mlx` console script.
+
+## Current state
 
 ```bash
 uv run ck-mlx --backend local status
@@ -13,15 +16,19 @@ uv run ck-mlx --backend local index . --force
 uv run ck-mlx --backend local search "embedding provider" --mode hybrid --rerank
 ```
 
-The `ck-mlx` console script is installed.
+- `ck-mlx` supports both `api` and `local` backends.
+- `ck-mlx status` reports the active backend, selected models, and index metadata.
+- The MCP server exposes `semantic_search`, `hybrid_search`, `regex_search`, and `index_status`.
 
 ## Install
+
+With uv:
 
 ```bash
 uv sync --extra local --group dev
 ```
 
-Package install:
+With pip:
 
 ```bash
 pip install 'ck-mlx[local]'
@@ -41,7 +48,7 @@ Override that behavior with either:
 
 ## Local mode
 
-Local mode downloads Hugging Face MLX models on first use. No running server is required.
+Local mode downloads Hugging Face MLX models on first use. No running server is required for embeddings or reranking.
 
 ```bash
 CK_BACKEND=local uv run ck-mlx index . --force
@@ -78,9 +85,10 @@ uv run ck-mlx index . --force
 
 ## Commands
 
-- `uv run ck-mlx index <path>` builds or refreshes the local index.
-- `uv run ck-mlx search "query" --mode hybrid` searches the current index.
+- `uv run ck-mlx index <path> [--force]` builds or refreshes the local index.
+- `uv run ck-mlx search "query" --mode hybrid|semantic|lexical [--limit N] [--rerank] [--top-n N]` searches the current index.
 - `uv run ck-mlx status` reports the active backend, model selection, and index metadata.
+- `uv run ck-mlx --backend local|api ...` overrides backend selection for one command.
 
 Indexes are stored under `.ck/index.db`.
 
