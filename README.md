@@ -1,6 +1,6 @@
 # ck-mlx
 
-`ck-mlx` is the Python fork of `ck-search`: a local code search CLI and MCP server
+`ck-mlx` is the Swift fork of `ck-search`: a local code search CLI and MCP server
 with two embedding backends.
 
 - `local` runs MLX embedding and reranking models directly on Apple Silicon.
