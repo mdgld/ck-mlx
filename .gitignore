@@ -13,7 +13,13 @@ wheels/
 .ck/
 .ck-mlx/
 
+# Swift build artifacts
+.build/
+
 # Local tooling/runtime state
 .codegraph
 .omx/
+.omg/
+.omc/
 .serena/
+MEMORY.md

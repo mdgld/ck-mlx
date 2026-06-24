@@ -23,7 +23,15 @@ def find_index_root(start_path: Path) -> Path:
 
 def get_searcher() -> Searcher:
     root = find_index_root(Path(os.getcwd()))
-    store = Store(root)
+    try:
+        store = Store(root)
+    except ValueError as e:
+        if "Embedding dimension is required" in str(e):
+            from ck_mlx.embed import get_embedding_metadata
+            meta = get_embedding_metadata()
+            store = Store(root, embedding_dimension=meta["dimension"], embedding_model=meta["model"])
+        else:
+            raise e
     return Searcher(store)
 
 
@@ -146,7 +154,15 @@ def index_status() -> str:
     store = None
     try:
         root = find_index_root(Path(os.getcwd()))
-        store = Store(root)
+        try:
+            store = Store(root)
+        except ValueError as e:
+            if "Embedding dimension is required" in str(e):
+                from ck_mlx.embed import get_embedding_metadata
+                meta = get_embedding_metadata()
+                store = Store(root, embedding_dimension=meta["dimension"], embedding_model=meta["model"])
+            else:
+                raise e
         status = store.get_status()
         return (
             f"Index Root: {root}\n"
